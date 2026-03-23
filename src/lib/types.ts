@@ -1,4 +1,10 @@
-export type Region = "japan" | "global" | "taiwan" | "us" | "eu" | "latam";
+export type BuiltInRegion = "japan" | "global" | "taiwan" | "us" | "eu" | "latam";
+export type Region = BuiltInRegion | (string & {});
+
+export interface CustomRegion {
+  id: string;
+  label: string;
+}
 export type TabId = "general" | "paid" | "companies";
 export type UpdateFrequency = "hourly" | "daily" | "twice" | "manual";
 export type Locale = "ja" | "en" | "zh-TW" | "es";
@@ -40,6 +46,7 @@ export interface AppSettings {
   locale: Locale;
   region: Region;
   enabledRegions: Region[];
+  customRegions: CustomRegion[];
   updateFrequency: UpdateFrequency;
   updateTime: string;
   notificationsEnabled: boolean;

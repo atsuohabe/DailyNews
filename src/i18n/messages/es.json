@@ -15,7 +15,12 @@
     "taiwan": "Taiwán",
     "us": "Estados Unidos",
     "eu": "Europa",
-    "latam": "Latinoamérica"
+    "latam": "Latinoamérica",
+    "edit": "Editar",
+    "addRegion": "Añadir Región",
+    "builtIn": "Predefinidas",
+    "addCustom": "Añadir región personalizada",
+    "customPlaceholder": "Nombre de la región"
   },
   "news": {
     "topArticles": "Top {count} Noticias",

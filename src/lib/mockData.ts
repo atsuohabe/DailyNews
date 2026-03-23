@@ -1,6 +1,6 @@
-import { type Article, type Region } from "./types";
+import { type Article, type BuiltInRegion, type Region } from "./types";
 
-const mockArticlesByRegion: Record<Region, Article[]> = {
+const mockArticlesByRegion: Record<BuiltInRegion, Article[]> = {
   japan: Array.from({ length: 10 }, (_, i) => ({
     id: `jp-${i + 1}`,
     title: [
@@ -202,7 +202,15 @@ const mockArticlesByRegion: Record<Region, Article[]> = {
 };
 
 export function getMockArticles(region: Region): Article[] {
-  return mockArticlesByRegion[region] || [];
+  const builtIn = mockArticlesByRegion[region as BuiltInRegion];
+  if (builtIn) return builtIn;
+
+  // For custom regions, return global articles relabeled with the custom region
+  return (mockArticlesByRegion.global || []).map((a, i) => ({
+    ...a,
+    id: `${region}-${i + 1}`,
+    region,
+  }));
 }
 
 export const mockPaidSiteArticles: Article[] = Array.from({ length: 5 }, (_, i) => ({

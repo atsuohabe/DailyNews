@@ -15,7 +15,12 @@
     "taiwan": "台灣",
     "us": "美國",
     "eu": "歐洲",
-    "latam": "拉丁美洲"
+    "latam": "拉丁美洲",
+    "edit": "編輯",
+    "addRegion": "新增區域",
+    "builtIn": "預設",
+    "addCustom": "新增自訂區域",
+    "customPlaceholder": "輸入區域名稱"
   },
   "news": {
     "topArticles": "前 {count} 則新聞",

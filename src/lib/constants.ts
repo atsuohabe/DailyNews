@@ -22,6 +22,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   locale: "ja",
   region: "japan",
   enabledRegions: ALL_REGIONS,
+  customRegions: [],
   updateFrequency: "daily",
   updateTime: "07:00",
   notificationsEnabled: true,

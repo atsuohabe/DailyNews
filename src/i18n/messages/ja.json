@@ -15,7 +15,12 @@
     "taiwan": "台湾",
     "us": "アメリカ",
     "eu": "ヨーロッパ",
-    "latam": "中南米"
+    "latam": "中南米",
+    "edit": "編集",
+    "addRegion": "エリアを追加",
+    "builtIn": "プリセット",
+    "addCustom": "カスタムエリアを追加",
+    "customPlaceholder": "エリア名を入力"
   },
   "news": {
     "topArticles": "トップ {count} ニュース",
