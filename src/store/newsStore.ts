@@ -8,7 +8,8 @@ import { getMockArticles } from "@/lib/mockData";
 interface NewsState {
   articles: Record<string, Article[]>;
   lastUpdated: Record<string, string>;
-  fetchArticles: (region: Region) => void;
+  isLoading: Record<string, boolean>;
+  fetchArticles: (region: Region) => Promise<void>;
   markAsRead: (articleId: string) => void;
   markAllAsRead: (region: Region) => void;
   getUnreadCount: (region: Region) => number;
@@ -19,17 +20,46 @@ export const useNewsStore = create<NewsState>()(
     (set, get) => ({
       articles: {},
       lastUpdated: {},
-      fetchArticles: (region) => {
-        const mockArticles = getMockArticles(region);
-        const existing = get().articles[region] || [];
-        const merged = mockArticles.map((article) => {
-          const prev = existing.find((a) => a.id === article.id);
-          return prev ? { ...article, isRead: prev.isRead } : article;
-        });
+      isLoading: {},
+      fetchArticles: async (region) => {
         set((state) => ({
-          articles: { ...state.articles, [region]: merged },
-          lastUpdated: { ...state.lastUpdated, [region]: new Date().toISOString() },
+          isLoading: { ...state.isLoading, [region]: true },
         }));
+
+        try {
+          const res = await fetch(`/api/news?region=${region}`);
+          const data = await res.json();
+          const fetched: Article[] = data.articles || [];
+
+          // Fall back to mock data if API returns nothing
+          const newArticles = fetched.length > 0 ? fetched : getMockArticles(region);
+
+          const existing = get().articles[region] || [];
+          const merged = newArticles.map((article) => {
+            const prev = existing.find((a) => a.id === article.id);
+            return prev ? { ...article, isRead: prev.isRead } : article;
+          });
+
+          set((state) => ({
+            articles: { ...state.articles, [region]: merged },
+            lastUpdated: { ...state.lastUpdated, [region]: new Date().toISOString() },
+            isLoading: { ...state.isLoading, [region]: false },
+          }));
+        } catch {
+          // On error, fall back to mock data
+          const mockArticles = getMockArticles(region);
+          const existing = get().articles[region] || [];
+          const merged = mockArticles.map((article) => {
+            const prev = existing.find((a) => a.id === article.id);
+            return prev ? { ...article, isRead: prev.isRead } : article;
+          });
+
+          set((state) => ({
+            articles: { ...state.articles, [region]: merged },
+            lastUpdated: { ...state.lastUpdated, [region]: new Date().toISOString() },
+            isLoading: { ...state.isLoading, [region]: false },
+          }));
+        }
       },
       markAsRead: (articleId) => {
         set((state) => {

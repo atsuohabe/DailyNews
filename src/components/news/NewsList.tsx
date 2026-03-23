@@ -26,7 +26,7 @@ export default function NewsList() {
   const { articles, isTranslating } = useTranslatedArticles(rawArticles, locale, region);
 
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const isLoading = useNewsStore((s) => s.isLoading[region]) || false;
 
   useEffect(() => {
     if (rawArticles.length === 0) {
@@ -35,9 +35,7 @@ export default function NewsList() {
   }, [region, rawArticles.length, fetchArticles]);
 
   const handleRefresh = () => {
-    setIsRefreshing(true);
     fetchArticles(region);
-    setTimeout(() => setIsRefreshing(false), 500);
   };
 
   const handleArticleClick = (article: Article) => {
@@ -76,7 +74,7 @@ export default function NewsList() {
           <button
             onClick={handleRefresh}
             className={`p-2 rounded-lg hover:bg-surface-bright transition-colors ${
-              isRefreshing ? "animate-spin" : ""
+              isLoading ? "animate-spin" : ""
             }`}
           >
             <RefreshCw size={16} className="text-text-secondary" />
