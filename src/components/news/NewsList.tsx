@@ -23,7 +23,7 @@ export default function NewsList() {
   const markAsRead = useNewsStore((s) => s.markAsRead);
   const markAllAsRead = useNewsStore((s) => s.markAllAsRead);
 
-  const { articles, isTranslating } = useTranslatedArticles(rawArticles, locale);
+  const { articles, isTranslating } = useTranslatedArticles(rawArticles, locale, region);
 
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);

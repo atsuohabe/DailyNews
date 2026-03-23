@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { type Article, type Locale } from "@/lib/types";
+import { type Article, type Locale, type Region } from "@/lib/types";
+
+// Regions where articles are expected to already be in the target language
+const NATIVE_REGION: Record<Locale, Region[]> = {
+  ja: ["japan"],
+  en: ["us", "global"],
+  "zh-TW": ["taiwan"],
+  es: ["latam"],
+};
 
 interface TranslatedArticle extends Article {
   translatedTitle?: string;
@@ -23,15 +31,22 @@ async function translateText(text: string, targetLang: string): Promise<string> 
 
 export function useTranslatedArticles(
   articles: Article[],
-  locale: Locale
+  locale: Locale,
+  region?: Region
 ): { articles: TranslatedArticle[]; isTranslating: boolean } {
   const [translated, setTranslated] = useState<Map<string, { title: string; summary: string }>>(new Map());
   const [isTranslating, setIsTranslating] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
-    // Japanese is the default/original language for most articles — skip translation
-    if (locale === "ja" || articles.length === 0) {
+    if (articles.length === 0) {
+      setTranslated(new Map());
+      return;
+    }
+
+    // Skip translation if the region natively matches the locale
+    const nativeRegions = NATIVE_REGION[locale] || [];
+    if (region && nativeRegions.includes(region)) {
       setTranslated(new Map());
       return;
     }
