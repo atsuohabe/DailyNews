@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { type AppSettings, type Locale, type Region, type UpdateFrequency } from "@/lib/types";
-import { DEFAULT_SETTINGS } from "@/lib/constants";
+import { ALL_REGIONS, DEFAULT_SETTINGS } from "@/lib/constants";
 
 interface SettingsState extends AppSettings {
   setLocale: (locale: Locale) => void;
@@ -40,6 +40,14 @@ export const useSettingsStore = create<SettingsState>()(
       setUpdateTime: (time) => set({ updateTime: time }),
       setNotificationsEnabled: (enabled) => set({ notificationsEnabled: enabled }),
     }),
-    { name: "dailynews-settings" }
+    {
+      name: "dailynews-settings",
+      merge: (persisted, current) => ({
+        ...current,
+        ...(persisted as Partial<SettingsState>),
+        // Ensure enabledRegions always has a valid value for existing users
+        enabledRegions: (persisted as Partial<SettingsState>)?.enabledRegions ?? ALL_REGIONS,
+      }),
+    }
   )
 );
