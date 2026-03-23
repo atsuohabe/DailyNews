@@ -4,13 +4,21 @@ import { useTranslations } from "next-intl";
 import { Clock, ExternalLink } from "lucide-react";
 import { type Article } from "@/lib/types";
 
+interface TranslatedArticle extends Article {
+  translatedTitle?: string;
+  translatedSummary?: string;
+}
+
 interface NewsCardProps {
-  article: Article;
+  article: TranslatedArticle;
   onClick: () => void;
 }
 
 export default function NewsCard({ article, onClick }: NewsCardProps) {
   const t = useTranslations("news");
+
+  const title = article.translatedTitle || article.title;
+  const summary = article.translatedSummary || article.summary;
 
   const timeAgo = (dateStr: string) => {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -34,11 +42,11 @@ export default function NewsCard({ article, onClick }: NewsCardProps) {
                 article.isRead ? "text-text-secondary" : "text-text"
               }`}
             >
-              {article.title}
+              {title}
             </h3>
           </div>
           <p className="text-xs text-text-secondary line-clamp-2 mb-2">
-            {article.summary}
+            {summary}
           </p>
           <div className="flex items-center gap-3 text-xs text-text-secondary">
             <span className="flex items-center gap-1">

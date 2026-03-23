@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { RefreshCw, CheckCheck } from "lucide-react";
+import { RefreshCw, CheckCheck, Loader2 } from "lucide-react";
 import { type Article, type Region } from "@/lib/types";
 import { useNewsStore } from "@/store/newsStore";
 import { useSettingsStore } from "@/store/settingsStore";
+import { useTranslatedArticles } from "@/hooks/useTranslatedArticles";
 import NewsCard from "./NewsCard";
 import RegionSelector from "./RegionSelector";
 import ArticleModal from "./ArticleModal";
@@ -14,21 +15,24 @@ import { ARTICLES_PER_REGION } from "@/lib/constants";
 export default function NewsList() {
   const t = useTranslations("news");
   const region = useSettingsStore((s) => s.region);
+  const locale = useSettingsStore((s) => s.locale);
   const setRegion = useSettingsStore((s) => s.setRegion);
-  const articles = useNewsStore((s) => s.articles[region]);
+  const rawArticles = useNewsStore((s) => s.articles[region]);
   const lastUpdated = useNewsStore((s) => s.lastUpdated[region]);
   const fetchArticles = useNewsStore((s) => s.fetchArticles);
   const markAsRead = useNewsStore((s) => s.markAsRead);
   const markAllAsRead = useNewsStore((s) => s.markAllAsRead);
 
+  const { articles, isTranslating } = useTranslatedArticles(rawArticles, locale);
+
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
-    if (articles.length === 0) {
+    if (rawArticles.length === 0) {
       fetchArticles(region);
     }
-  }, [region, articles.length, fetchArticles]);
+  }, [region, rawArticles.length, fetchArticles]);
 
   const handleRefresh = () => {
     setIsRefreshing(true);
@@ -49,8 +53,9 @@ export default function NewsList() {
 
       <div className="px-4 py-2 flex items-center justify-between">
         <div>
-          <h2 className="text-sm font-semibold">
+          <h2 className="text-sm font-semibold flex items-center gap-2">
             {t("topArticles", { count: ARTICLES_PER_REGION })}
+            {isTranslating && <Loader2 size={14} className="animate-spin text-primary" />}
           </h2>
           {lastUpdated && (
             <p className="text-xs text-text-secondary">
