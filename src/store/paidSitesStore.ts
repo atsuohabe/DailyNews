@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { type PaidSite, type Article } from "@/lib/types";
-import { mockPaidSiteArticles } from "@/lib/mockData";
+import { getMockPaidArticles } from "@/lib/mockData";
 
 interface PaidSitesState {
   sites: PaidSite[];
@@ -13,6 +13,7 @@ interface PaidSitesState {
   updateSite: (id: string, updates: Partial<PaidSite>) => void;
   fetchArticles: () => void;
   markAsRead: (articleId: string) => void;
+  markAllAsRead: () => void;
   getUnreadCount: () => number;
 }
 
@@ -27,11 +28,17 @@ export const usePaidSitesStore = create<PaidSitesState>()(
           id: crypto.randomUUID(),
           isActive: true,
         };
-        set((state) => ({ sites: [...state.sites, newSite] }));
+        set((state) => {
+          const sites = [...state.sites, newSite];
+          // Generate articles for the new site
+          const newArticles = getMockPaidArticles(newSite.name, newSite.id);
+          return { sites, articles: [...state.articles, ...newArticles] };
+        });
       },
       removeSite: (id) => {
         set((state) => ({
           sites: state.sites.filter((s) => s.id !== id),
+          articles: state.articles.filter((a) => !a.id.includes(id)),
         }));
       },
       updateSite: (id, updates) => {
@@ -40,8 +47,16 @@ export const usePaidSitesStore = create<PaidSitesState>()(
         }));
       },
       fetchArticles: () => {
-        const existing = get().articles;
-        const merged = mockPaidSiteArticles.map((article) => {
+        const { sites, articles: existing } = get();
+        if (sites.length === 0) {
+          set({ articles: [] });
+          return;
+        }
+        const allArticles = sites.flatMap((site) =>
+          getMockPaidArticles(site.name, site.id)
+        );
+        // Preserve read status
+        const merged = allArticles.map((article) => {
           const prev = existing.find((a) => a.id === article.id);
           return prev ? { ...article, isRead: prev.isRead } : article;
         });
@@ -52,6 +67,11 @@ export const usePaidSitesStore = create<PaidSitesState>()(
           articles: state.articles.map((a) =>
             a.id === articleId ? { ...a, isRead: true } : a
           ),
+        }));
+      },
+      markAllAsRead: () => {
+        set((state) => ({
+          articles: state.articles.map((a) => ({ ...a, isRead: true })),
         }));
       },
       getUnreadCount: () => {

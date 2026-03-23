@@ -213,6 +213,49 @@ export function getMockArticles(region: Region): Article[] {
   }));
 }
 
+// Generate mock articles per paid site
+export function getMockPaidArticles(siteName: string, siteId: string): Article[] {
+  const templates = [
+    { title: `【${siteName}】独占分析：業界動向レポート`, summary: `${siteName}が提供する独占分析レポート。業界の最新動向と今後の展望を専門家の視点から詳しく解説。市場の変化やテクノロジーの進化が企業戦略に与える影響を多角的に分析した。` },
+    { title: `【${siteName}】特集：2026年の注目トレンド`, summary: `${siteName}の編集部が厳選した2026年の注目トレンドを紹介。AI技術の社会実装、サステナブル経営の深化、地政学リスクへの対応など、ビジネスリーダーが押さえるべき重要テーマを網羅的に解説。` },
+    { title: `【${siteName}】マーケット速報：今週の見通し`, summary: `${siteName}のマーケットアナリストが今週の市場見通しを分析。主要中央銀行の金融政策決定、企業決算シーズンの展望、為替・商品市場の動向を総合的にレビュー。` },
+  ];
+
+  return templates.map((t, i) => ({
+    id: `paid-${siteId}-${i + 1}`,
+    title: t.title,
+    summary: t.summary,
+    source: siteName,
+    sourceUrl: "https://example.com/paid/" + (i + 1),
+    publishedAt: new Date(Date.now() - i * 7200000).toISOString(),
+    region: "global" as Region,
+    isRead: false,
+    category: "paid" as const,
+  }));
+}
+
+// Generate mock articles per company
+export function getMockCompanyArticles(companyName: string, companyId: string): Article[] {
+  const templates = [
+    { title: `${companyName}、新たな事業戦略を発表`, summary: `${companyName}は本日、中長期的な成長戦略の新方針を発表した。デジタルトランスフォーメーションの加速と新規事業への投資拡大を柱とし、今後3年間で売上高30%増を目指す。研究開発費は前年比20%増の計画。` },
+    { title: `${companyName}、四半期決算で市場予想を上回る`, summary: `${companyName}の最新四半期決算は、売上高・利益ともに市場予想を上回った。特にデジタル事業セグメントが前年同期比45%増と好調。海外事業の拡大も収益に貢献し、通期業績予想を上方修正した。` },
+    { title: `${companyName}のサステナビリティ戦略が注目`, summary: `${companyName}が発表したサステナビリティレポートが業界内で注目を集めている。2030年までにカーボンニュートラル達成を宣言し、サプライチェーン全体でのCO2排出量50%削減を目標に掲げた。` },
+    { title: `${companyName}、業界パートナーシップを締結`, summary: `${companyName}は主要テクノロジー企業との戦略的パートナーシップを発表した。AI・クラウド技術を活用した次世代プラットフォームの共同開発により、業界全体のデジタル化を推進する。投資額は500億円規模。` },
+  ];
+
+  return templates.map((t, i) => ({
+    id: `company-${companyId}-${i + 1}`,
+    title: t.title,
+    summary: t.summary,
+    source: companyName,
+    sourceUrl: "https://example.com/company/" + (i + 1),
+    publishedAt: new Date(Date.now() - i * 5400000).toISOString(),
+    region: "global" as Region,
+    isRead: false,
+    category: "companies" as const,
+  }));
+}
+
 export const mockPaidSiteArticles: Article[] = Array.from({ length: 5 }, (_, i) => ({
   id: `paid-${i + 1}`,
   title: [

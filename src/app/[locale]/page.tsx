@@ -8,6 +8,7 @@ import NewsList from "@/components/news/NewsList";
 import PaidSiteArticles from "@/components/paid-sites/PaidSiteArticles";
 import CompanyNews from "@/components/companies/CompanyNews";
 import { registerServiceWorker } from "@/lib/notifications";
+import { useAutoRefresh } from "@/hooks/useAutoRefresh";
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<TabId>("general");
@@ -16,9 +17,11 @@ export default function HomePage() {
     registerServiceWorker();
   }, []);
 
+  useAutoRefresh();
+
   return (
     <div className="min-h-screen pb-16 md:pb-0">
-      <Header />
+      <Header onNavigateTab={setActiveTab} />
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
       <main className="max-w-5xl mx-auto">

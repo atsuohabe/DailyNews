@@ -49,7 +49,8 @@
     "noSites": "登録されたサイトはありません",
     "loginMaintained": "ログイン情報は維持されます",
     "articles": "記事一覧",
-    "confirmDelete": "このサイトを削除しますか？"
+    "confirmDelete": "このサイトを削除しますか？",
+    "emptyDescription": "有料ニュースサイトを登録すると、記事が自動的に取得されます"
   },
   "companies": {
     "title": "特定企業情報",
@@ -62,7 +63,8 @@
     "edit": "編集",
     "noCompanies": "登録された企業はありません",
     "topics": "主要トピック",
-    "confirmDelete": "この企業を削除しますか？"
+    "confirmDelete": "この企業を削除しますか？",
+    "emptyDescription": "企業を登録すると、関連ニュースが自動的に取得されます"
   },
   "settings": {
     "title": "設定",

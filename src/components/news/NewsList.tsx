@@ -17,7 +17,7 @@ export default function NewsList() {
   const region = useSettingsStore((s) => s.region);
   const locale = useSettingsStore((s) => s.locale);
   const setRegion = useSettingsStore((s) => s.setRegion);
-  const rawArticles = useNewsStore((s) => s.articles[region]);
+  const rawArticles = useNewsStore((s) => s.articles[region]) || [];
   const lastUpdated = useNewsStore((s) => s.lastUpdated[region]);
   const fetchArticles = useNewsStore((s) => s.fetchArticles);
   const markAsRead = useNewsStore((s) => s.markAsRead);

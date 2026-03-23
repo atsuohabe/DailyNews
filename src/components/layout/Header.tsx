@@ -2,27 +2,22 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Settings, Bell, Globe } from "lucide-react";
+import { Settings, Globe } from "lucide-react";
 import { useSettingsStore } from "@/store/settingsStore";
-import { useNewsStore } from "@/store/newsStore";
-import { usePaidSitesStore } from "@/store/paidSitesStore";
-import { useCompaniesStore } from "@/store/companiesStore";
 import { LOCALE_LABELS } from "@/lib/constants";
-import Badge from "@/components/ui/Badge";
-import type { Locale } from "@/lib/types";
+import NotificationDropdown from "./NotificationDropdown";
+import type { Locale, TabId } from "@/lib/types";
 
-export default function Header() {
+interface HeaderProps {
+  onNavigateTab?: (tab: TabId) => void;
+}
+
+export default function Header({ onNavigateTab }: HeaderProps) {
   const t = useTranslations();
   const router = useRouter();
   const pathname = usePathname();
   const locale = useSettingsStore((s) => s.locale);
-  const region = useSettingsStore((s) => s.region);
   const setLocale = useSettingsStore((s) => s.setLocale);
-
-  const newsUnread = useNewsStore((s) => s.getUnreadCount(region));
-  const paidUnread = usePaidSitesStore((s) => s.getUnreadCount());
-  const companyUnread = useCompaniesStore((s) => s.getUnreadCount());
-  const totalUnread = newsUnread + paidUnread + companyUnread;
 
   const switchLocale = (newLocale: string) => {
     setLocale(newLocale as Locale);
@@ -61,14 +56,7 @@ export default function Header() {
               </select>
             </div>
           </div>
-          <button className="relative p-2 rounded-lg hover:bg-surface-bright transition-colors">
-            <Bell size={20} className="text-text-secondary" />
-            {totalUnread > 0 && (
-              <span className="absolute -top-0.5 -right-0.5">
-                <Badge count={totalUnread} />
-              </span>
-            )}
-          </button>
+          <NotificationDropdown onNavigateTab={onNavigateTab} />
           <button
             onClick={goToSettings}
             className="p-2 rounded-lg hover:bg-surface-bright transition-colors"

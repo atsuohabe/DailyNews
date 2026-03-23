@@ -49,7 +49,8 @@
     "noSites": "尚未註冊任何網站",
     "loginMaintained": "登入資訊將被保留",
     "articles": "文章列表",
-    "confirmDelete": "確定要刪除此網站嗎？"
+    "confirmDelete": "確定要刪除此網站嗎？",
+    "emptyDescription": "註冊付費新聞網站後，將自動擷取文章"
   },
   "companies": {
     "title": "企業資訊",
@@ -62,7 +63,8 @@
     "edit": "編輯",
     "noCompanies": "尚未註冊任何企業",
     "topics": "主要議題",
-    "confirmDelete": "確定要刪除此企業嗎？"
+    "confirmDelete": "確定要刪除此企業嗎？",
+    "emptyDescription": "註冊企業後，將自動擷取相關新聞"
   },
   "settings": {
     "title": "設定",

@@ -49,7 +49,8 @@
     "noSites": "No hay sitios registrados",
     "loginMaintained": "Las credenciales se mantienen",
     "articles": "Artículos",
-    "confirmDelete": "¿Eliminar este sitio?"
+    "confirmDelete": "¿Eliminar este sitio?",
+    "emptyDescription": "Registre sitios de noticias de pago para obtener artículos automáticamente"
   },
   "companies": {
     "title": "Información de Empresas",
@@ -62,7 +63,8 @@
     "edit": "Editar",
     "noCompanies": "No hay empresas registradas",
     "topics": "Temas Principales",
-    "confirmDelete": "¿Eliminar esta empresa?"
+    "confirmDelete": "¿Eliminar esta empresa?",
+    "emptyDescription": "Registre empresas para obtener noticias relacionadas automáticamente"
   },
   "settings": {
     "title": "Configuración",

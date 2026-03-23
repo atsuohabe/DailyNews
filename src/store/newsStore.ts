@@ -6,8 +6,8 @@ import { type Article, type Region } from "@/lib/types";
 import { getMockArticles } from "@/lib/mockData";
 
 interface NewsState {
-  articles: Record<Region, Article[]>;
-  lastUpdated: Record<Region, string>;
+  articles: Record<string, Article[]>;
+  lastUpdated: Record<string, string>;
   fetchArticles: (region: Region) => void;
   markAsRead: (articleId: string) => void;
   markAllAsRead: (region: Region) => void;
@@ -17,25 +17,11 @@ interface NewsState {
 export const useNewsStore = create<NewsState>()(
   persist(
     (set, get) => ({
-      articles: {
-        japan: [],
-        global: [],
-        taiwan: [],
-        us: [],
-        eu: [],
-        latam: [],
-      },
-      lastUpdated: {
-        japan: "",
-        global: "",
-        taiwan: "",
-        us: "",
-        eu: "",
-        latam: "",
-      },
+      articles: {},
+      lastUpdated: {},
       fetchArticles: (region) => {
         const mockArticles = getMockArticles(region);
-        const existing = get().articles[region];
+        const existing = get().articles[region] || [];
         const merged = mockArticles.map((article) => {
           const prev = existing.find((a) => a.id === article.id);
           return prev ? { ...article, isRead: prev.isRead } : article;
@@ -48,7 +34,7 @@ export const useNewsStore = create<NewsState>()(
       markAsRead: (articleId) => {
         set((state) => {
           const newArticles = { ...state.articles };
-          for (const region of Object.keys(newArticles) as Region[]) {
+          for (const region of Object.keys(newArticles)) {
             newArticles[region] = newArticles[region].map((a) =>
               a.id === articleId ? { ...a, isRead: true } : a
             );
@@ -60,12 +46,12 @@ export const useNewsStore = create<NewsState>()(
         set((state) => ({
           articles: {
             ...state.articles,
-            [region]: state.articles[region].map((a) => ({ ...a, isRead: true })),
+            [region]: (state.articles[region] || []).map((a) => ({ ...a, isRead: true })),
           },
         }));
       },
       getUnreadCount: (region) => {
-        return get().articles[region].filter((a) => !a.isRead).length;
+        return (get().articles[region] || []).filter((a) => !a.isRead).length;
       },
     }),
     { name: "dailynews-articles" }

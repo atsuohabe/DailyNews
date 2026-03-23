@@ -49,7 +49,8 @@
     "noSites": "No sites registered",
     "loginMaintained": "Login credentials are maintained",
     "articles": "Articles",
-    "confirmDelete": "Delete this site?"
+    "confirmDelete": "Delete this site?",
+    "emptyDescription": "Register paid news sites to automatically fetch their articles"
   },
   "companies": {
     "title": "Company Information",
@@ -62,7 +63,8 @@
     "edit": "Edit",
     "noCompanies": "No companies registered",
     "topics": "Key Topics",
-    "confirmDelete": "Delete this company?"
+    "confirmDelete": "Delete this company?",
+    "emptyDescription": "Register companies to automatically fetch related news"
   },
   "settings": {
     "title": "Settings",
