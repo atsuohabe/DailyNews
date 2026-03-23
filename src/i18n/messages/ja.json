@@ -1,0 +1,90 @@
+{
+  "app": {
+    "title": "DailyNews",
+    "subtitle": "毎日のニュースを素早くチェック"
+  },
+  "tabs": {
+    "general": "一般ニュース",
+    "paid": "登録有料サイト",
+    "companies": "特定企業情報"
+  },
+  "regions": {
+    "label": "エリア選択",
+    "japan": "日本",
+    "global": "グローバル",
+    "taiwan": "台湾",
+    "us": "アメリカ",
+    "eu": "ヨーロッパ",
+    "latam": "中南米"
+  },
+  "news": {
+    "topArticles": "トップ {count} ニュース",
+    "readMore": "続きを読む",
+    "source": "出典",
+    "unread": "未読",
+    "markRead": "既読にする",
+    "noArticles": "記事がありません",
+    "lastUpdated": "最終更新: {time}",
+    "loading": "読み込み中...",
+    "readOriginal": "原文を読む",
+    "translateTo": "翻訳言語",
+    "summary": "要約"
+  },
+  "paidSites": {
+    "title": "登録有料サイト",
+    "addSite": "サイトを追加",
+    "siteName": "サイト名",
+    "siteUrl": "サイトURL",
+    "username": "ユーザー名",
+    "password": "パスワード",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "noSites": "登録されたサイトはありません",
+    "loginMaintained": "ログイン情報は維持されます",
+    "articles": "記事一覧",
+    "confirmDelete": "このサイトを削除しますか？"
+  },
+  "companies": {
+    "title": "特定企業情報",
+    "addCompany": "企業を追加",
+    "companyName": "企業名",
+    "companyUrl": "企業URL",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "delete": "削除",
+    "edit": "編集",
+    "noCompanies": "登録された企業はありません",
+    "topics": "主要トピック",
+    "confirmDelete": "この企業を削除しますか？"
+  },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "region": "デフォルトエリア",
+    "updateFrequency": "更新頻度",
+    "updateTime": "更新時刻",
+    "notifications": "プッシュ通知",
+    "enableNotifications": "更新通知を有効にする",
+    "frequency": {
+      "hourly": "毎時",
+      "daily": "毎日",
+      "twice": "1日2回",
+      "manual": "手動"
+    },
+    "saved": "設定を保存しました",
+    "back": "戻る"
+  },
+  "common": {
+    "close": "閉じる",
+    "confirm": "確認",
+    "refresh": "更新",
+    "search": "検索"
+  },
+  "notifications": {
+    "newArticles": "新しい記事が {count} 件あります",
+    "updated": "{tab} が更新されました",
+    "permissionDenied": "通知の許可が必要です"
+  }
+}

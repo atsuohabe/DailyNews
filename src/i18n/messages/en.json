@@ -1,0 +1,90 @@
+{
+  "app": {
+    "title": "DailyNews",
+    "subtitle": "Quick daily news at a glance"
+  },
+  "tabs": {
+    "general": "General News",
+    "paid": "Paid Sites",
+    "companies": "Company Info"
+  },
+  "regions": {
+    "label": "Select Region",
+    "japan": "Japan",
+    "global": "Global",
+    "taiwan": "Taiwan",
+    "us": "United States",
+    "eu": "Europe",
+    "latam": "Latin America"
+  },
+  "news": {
+    "topArticles": "Top {count} News",
+    "readMore": "Read More",
+    "source": "Source",
+    "unread": "Unread",
+    "markRead": "Mark as Read",
+    "noArticles": "No articles available",
+    "lastUpdated": "Last updated: {time}",
+    "loading": "Loading...",
+    "readOriginal": "Read Original",
+    "translateTo": "Translate to",
+    "summary": "Summary"
+  },
+  "paidSites": {
+    "title": "Registered Paid Sites",
+    "addSite": "Add Site",
+    "siteName": "Site Name",
+    "siteUrl": "Site URL",
+    "username": "Username",
+    "password": "Password",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "noSites": "No sites registered",
+    "loginMaintained": "Login credentials are maintained",
+    "articles": "Articles",
+    "confirmDelete": "Delete this site?"
+  },
+  "companies": {
+    "title": "Company Information",
+    "addCompany": "Add Company",
+    "companyName": "Company Name",
+    "companyUrl": "Company URL",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "noCompanies": "No companies registered",
+    "topics": "Key Topics",
+    "confirmDelete": "Delete this company?"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "region": "Default Region",
+    "updateFrequency": "Update Frequency",
+    "updateTime": "Update Time",
+    "notifications": "Push Notifications",
+    "enableNotifications": "Enable update notifications",
+    "frequency": {
+      "hourly": "Hourly",
+      "daily": "Daily",
+      "twice": "Twice a day",
+      "manual": "Manual"
+    },
+    "saved": "Settings saved",
+    "back": "Back"
+  },
+  "common": {
+    "close": "Close",
+    "confirm": "Confirm",
+    "refresh": "Refresh",
+    "search": "Search"
+  },
+  "notifications": {
+    "newArticles": "{count} new articles available",
+    "updated": "{tab} has been updated",
+    "permissionDenied": "Notification permission required"
+  }
+}

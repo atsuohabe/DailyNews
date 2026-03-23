@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1e40af;
+  --color-primary-light: #3b82f6;
+  --color-primary-dark: #1e3a8a;
+  --color-accent: #f59e0b;
+  --color-surface: #ffffff;
+  --color-surface-dim: #f8fafc;
+  --color-surface-bright: #f1f5f9;
+  --color-text: #0f172a;
+  --color-text-secondary: #475569;
+  --color-border: #e2e8f0;
+  --color-unread: #ef4444;
+  --color-success: #22c55e;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  html {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans CJK JP", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-surface-dim text-text;
+  }
+}
+
+@layer components {
+  .tab-active {
+    @apply border-b-2 border-primary text-primary font-semibold;
+  }
+  .tab-inactive {
+    @apply text-text-secondary hover:text-primary transition-colors;
+  }
+  .card {
+    @apply bg-surface rounded-lg shadow-sm border border-border p-4 hover:shadow-md transition-shadow;
+  }
+  .badge-unread {
+    @apply inline-flex items-center justify-center w-2 h-2 rounded-full bg-unread;
+  }
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors font-medium;
+  }
+  .btn-secondary {
+    @apply bg-surface border border-border text-text px-4 py-2 rounded-lg hover:bg-surface-bright transition-colors;
+  }
+}

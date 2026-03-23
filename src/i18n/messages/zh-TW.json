@@ -1,0 +1,90 @@
+{
+  "app": {
+    "title": "DailyNews",
+    "subtitle": "每日快速瀏覽新聞"
+  },
+  "tabs": {
+    "general": "一般新聞",
+    "paid": "付費網站",
+    "companies": "企業資訊"
+  },
+  "regions": {
+    "label": "選擇地區",
+    "japan": "日本",
+    "global": "全球",
+    "taiwan": "台灣",
+    "us": "美國",
+    "eu": "歐洲",
+    "latam": "拉丁美洲"
+  },
+  "news": {
+    "topArticles": "前 {count} 則新聞",
+    "readMore": "閱讀更多",
+    "source": "來源",
+    "unread": "未讀",
+    "markRead": "標記為已讀",
+    "noArticles": "暫無文章",
+    "lastUpdated": "最後更新：{time}",
+    "loading": "載入中...",
+    "readOriginal": "閱讀原文",
+    "translateTo": "翻譯語言",
+    "summary": "摘要"
+  },
+  "paidSites": {
+    "title": "已註冊付費網站",
+    "addSite": "新增網站",
+    "siteName": "網站名稱",
+    "siteUrl": "網站網址",
+    "username": "使用者名稱",
+    "password": "密碼",
+    "save": "儲存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "noSites": "尚未註冊任何網站",
+    "loginMaintained": "登入資訊將被保留",
+    "articles": "文章列表",
+    "confirmDelete": "確定要刪除此網站嗎？"
+  },
+  "companies": {
+    "title": "企業資訊",
+    "addCompany": "新增企業",
+    "companyName": "企業名稱",
+    "companyUrl": "企業網址",
+    "save": "儲存",
+    "cancel": "取消",
+    "delete": "刪除",
+    "edit": "編輯",
+    "noCompanies": "尚未註冊任何企業",
+    "topics": "主要議題",
+    "confirmDelete": "確定要刪除此企業嗎？"
+  },
+  "settings": {
+    "title": "設定",
+    "language": "語言",
+    "region": "預設地區",
+    "updateFrequency": "更新頻率",
+    "updateTime": "更新時間",
+    "notifications": "推播通知",
+    "enableNotifications": "啟用更新通知",
+    "frequency": {
+      "hourly": "每小時",
+      "daily": "每日",
+      "twice": "每日兩次",
+      "manual": "手動"
+    },
+    "saved": "設定已儲存",
+    "back": "返回"
+  },
+  "common": {
+    "close": "關閉",
+    "confirm": "確認",
+    "refresh": "重新整理",
+    "search": "搜尋"
+  },
+  "notifications": {
+    "newArticles": "有 {count} 篇新文章",
+    "updated": "{tab} 已更新",
+    "permissionDenied": "需要通知權限"
+  }
+}

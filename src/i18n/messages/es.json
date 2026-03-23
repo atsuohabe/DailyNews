@@ -1,0 +1,90 @@
+{
+  "app": {
+    "title": "DailyNews",
+    "subtitle": "Noticias diarias de un vistazo"
+  },
+  "tabs": {
+    "general": "Noticias Generales",
+    "paid": "Sitios de Pago",
+    "companies": "Info de Empresas"
+  },
+  "regions": {
+    "label": "Seleccionar Región",
+    "japan": "Japón",
+    "global": "Global",
+    "taiwan": "Taiwán",
+    "us": "Estados Unidos",
+    "eu": "Europa",
+    "latam": "Latinoamérica"
+  },
+  "news": {
+    "topArticles": "Top {count} Noticias",
+    "readMore": "Leer más",
+    "source": "Fuente",
+    "unread": "No leído",
+    "markRead": "Marcar como leído",
+    "noArticles": "No hay artículos disponibles",
+    "lastUpdated": "Última actualización: {time}",
+    "loading": "Cargando...",
+    "readOriginal": "Leer original",
+    "translateTo": "Traducir a",
+    "summary": "Resumen"
+  },
+  "paidSites": {
+    "title": "Sitios de Pago Registrados",
+    "addSite": "Agregar Sitio",
+    "siteName": "Nombre del Sitio",
+    "siteUrl": "URL del Sitio",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "noSites": "No hay sitios registrados",
+    "loginMaintained": "Las credenciales se mantienen",
+    "articles": "Artículos",
+    "confirmDelete": "¿Eliminar este sitio?"
+  },
+  "companies": {
+    "title": "Información de Empresas",
+    "addCompany": "Agregar Empresa",
+    "companyName": "Nombre de la Empresa",
+    "companyUrl": "URL de la Empresa",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "noCompanies": "No hay empresas registradas",
+    "topics": "Temas Principales",
+    "confirmDelete": "¿Eliminar esta empresa?"
+  },
+  "settings": {
+    "title": "Configuración",
+    "language": "Idioma",
+    "region": "Región Predeterminada",
+    "updateFrequency": "Frecuencia de Actualización",
+    "updateTime": "Hora de Actualización",
+    "notifications": "Notificaciones Push",
+    "enableNotifications": "Activar notificaciones de actualización",
+    "frequency": {
+      "hourly": "Cada hora",
+      "daily": "Diario",
+      "twice": "Dos veces al día",
+      "manual": "Manual"
+    },
+    "saved": "Configuración guardada",
+    "back": "Volver"
+  },
+  "common": {
+    "close": "Cerrar",
+    "confirm": "Confirmar",
+    "refresh": "Actualizar",
+    "search": "Buscar"
+  },
+  "notifications": {
+    "newArticles": "{count} nuevos artículos disponibles",
+    "updated": "{tab} ha sido actualizado",
+    "permissionDenied": "Se requiere permiso de notificación"
+  }
+}
