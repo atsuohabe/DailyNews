@@ -45,7 +45,7 @@ export default function NewsCard({ article, onClick }: NewsCardProps) {
               {title}
             </h3>
           </div>
-          <p className="text-xs text-text-secondary line-clamp-2 mb-2">
+          <p className="text-xs text-text-secondary line-clamp-4 mb-2">
             {summary}
           </p>
           <div className="flex items-center gap-3 text-xs text-text-secondary">

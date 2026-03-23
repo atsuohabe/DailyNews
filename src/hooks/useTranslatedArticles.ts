@@ -124,7 +124,7 @@ export function useTranslatedArticles(
     return () => {
       controller.abort();
     };
-  }, [articles, locale]);
+  }, [articles, locale, region]);
 
   const result: TranslatedArticle[] = articles.map((article) => {
     const t = translated.get(article.id);

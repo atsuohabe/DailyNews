@@ -16,9 +16,12 @@ export const LOCALE_LABELS: Record<string, string> = {
   es: "Español",
 };
 
+export const ALL_REGIONS = REGIONS.map((r) => r.value);
+
 export const DEFAULT_SETTINGS: AppSettings = {
   locale: "ja",
   region: "japan",
+  enabledRegions: ALL_REGIONS,
   updateFrequency: "daily",
   updateTime: "07:00",
   notificationsEnabled: true,

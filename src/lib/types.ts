@@ -39,6 +39,7 @@ export interface Company {
 export interface AppSettings {
   locale: Locale;
   region: Region;
+  enabledRegions: Region[];
   updateFrequency: UpdateFrequency;
   updateTime: string;
   notificationsEnabled: boolean;
