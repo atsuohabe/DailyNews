@@ -19,14 +19,17 @@ interface TranslatedArticle extends Article {
 // Cache: key = `${articleId}:${locale}` → { title, summary }
 const translationCache = new Map<string, { title: string; summary: string }>();
 
-async function translateText(text: string, targetLang: string): Promise<string> {
+async function translateBatch(
+  texts: string[],
+  targetLang: string
+): Promise<string[]> {
   const res = await fetch("/api/translate", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, targetLang }),
+    body: JSON.stringify({ texts, targetLang }),
   });
   const data = await res.json();
-  return data.translated || text;
+  return data.translations || texts;
 }
 
 export function useTranslatedArticles(
@@ -76,46 +79,32 @@ export function useTranslatedArticles(
     abortRef.current = controller;
 
     setIsTranslating(true);
-    setTranslated(cached); // Show cached results immediately
-
-    // Translate in batches of 3 to avoid overwhelming the API
-    const batchSize = 3;
-    let completed = 0;
+    setTranslated(cached);
 
     (async () => {
-      for (let i = 0; i < needed.length; i += batchSize) {
-        if (controller.signal.aborted) return;
-
-        const batch = needed.slice(i, i + batchSize);
-        const results = await Promise.all(
-          batch.map(async (article) => {
-            try {
-              const [title, summary] = await Promise.all([
-                translateText(article.title, locale),
-                translateText(article.summary, locale),
-              ]);
-              return { id: article.id, title, summary };
-            } catch {
-              return { id: article.id, title: article.title, summary: article.summary };
-            }
-          })
-        );
+      try {
+        // Batch all titles and summaries into a single API call
+        const allTexts = needed.flatMap((a) => [a.title, a.summary || ""]);
+        const results = await translateBatch(allTexts, locale);
 
         if (controller.signal.aborted) return;
 
-        // Update cache and state
         setTranslated((prev) => {
           const next = new Map(prev);
-          for (const r of results) {
-            const cacheKey = `${r.id}:${locale}`;
-            translationCache.set(cacheKey, { title: r.title, summary: r.summary });
-            next.set(r.id, { title: r.title, summary: r.summary });
+          for (let i = 0; i < needed.length; i++) {
+            const article = needed[i];
+            const title = results[i * 2] || article.title;
+            const summary = results[i * 2 + 1] || article.summary;
+            const cacheKey = `${article.id}:${locale}`;
+            translationCache.set(cacheKey, { title, summary });
+            next.set(article.id, { title, summary });
           }
           return next;
         });
-
-        completed += batch.length;
-        if (completed >= needed.length) {
+      } catch {
+        // On error, keep originals
+      } finally {
+        if (!controller.signal.aborted) {
           setIsTranslating(false);
         }
       }
