@@ -54,6 +54,36 @@ async function fetchFromGNews(region: Region): Promise<Article[]> {
   }
 }
 
+async function fetchPageDescription(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "DailyNews/1.0" },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+
+    // Try og:description first, then meta description
+    const ogMatch = html.match(
+      /<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']+)["']/i
+    ) || html.match(
+      /<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:description["']/i
+    );
+    if (ogMatch?.[1]) return ogMatch[1].slice(0, 300);
+
+    const metaMatch = html.match(
+      /<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i
+    ) || html.match(
+      /<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["']/i
+    );
+    if (metaMatch?.[1]) return metaMatch[1].slice(0, 300);
+
+    return "";
+  } catch {
+    return "";
+  }
+}
+
 async function fetchFromRSS(region: Region): Promise<Article[]> {
   const feeds = getFeedsForRegion(region);
   const articles: Article[] = [];
@@ -62,23 +92,36 @@ async function fetchFromRSS(region: Region): Promise<Article[]> {
     feeds.map(async (source) => {
       try {
         const feed = await parser.parseURL(source.url);
-        return (feed.items || []).slice(0, 5).map(
-          (item, i): Article => ({
-            id: `rss-${region}-${source.name}-${i}-${Date.now()}`,
-            title: item.title || "",
-            summary:
-              item.contentSnippet?.slice(0, 200) ||
-              item.content?.replace(/<[^>]*>/g, "").slice(0, 200) ||
-              "",
-            source: source.name,
-            sourceUrl: item.link || "",
-            publishedAt: item.isoDate || item.pubDate || new Date().toISOString(),
-            region,
-            isRead: false,
-            category: "general",
-            originalLanguage: source.language,
+        const items = (feed.items || []).slice(0, 5);
+
+        const articlesFromFeed = await Promise.all(
+          items.map(async (item, i): Promise<Article> => {
+            let summary =
+              item.contentSnippet?.slice(0, 300) ||
+              item.content?.replace(/<[^>]*>/g, "").trim().slice(0, 300) ||
+              "";
+
+            // If no summary, try to fetch from the article page
+            if (!summary && item.link) {
+              summary = await fetchPageDescription(item.link);
+            }
+
+            return {
+              id: `rss-${region}-${source.name}-${i}-${Date.now()}`,
+              title: item.title || "",
+              summary,
+              source: source.name,
+              sourceUrl: item.link || "",
+              publishedAt: item.isoDate || item.pubDate || new Date().toISOString(),
+              region,
+              isRead: false,
+              category: "general",
+              originalLanguage: source.language,
+            };
           })
         );
+
+        return articlesFromFeed;
       } catch {
         return [];
       }
@@ -121,7 +164,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       region,
-      articles: unique.slice(0, 20),
+      articles: unique.slice(0, 10),
       timestamp: new Date().toISOString(),
       sources: {
         rss: rssArticles.length,
