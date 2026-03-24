@@ -34,21 +34,34 @@ async function fetchFromGNews(region: Region): Promise<Article[]> {
     const data = await res.json();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (data.articles || []).map(
-      (item: any, i: number): Article => ({
-        id: `gnews-${region}-${Date.now()}-${i}`,
-        title: item.title || "",
-        summary: item.description || "",
-        source: item.source?.name || "GNews",
-        sourceUrl: item.url || "",
-        publishedAt: item.publishedAt || new Date().toISOString(),
-        region,
-        isRead: false,
-        category: "general",
-        imageUrl: item.image || undefined,
-        originalLanguage: config.lang,
+    const articles = await Promise.all(
+      (data.articles || []).map(async (item: any, i: number): Promise<Article> => {
+        let summary = item.description || "";
+
+        // If summary is too short, try to enrich from the article page
+        if (summary.length < 80 && item.url) {
+          const pageSummary = await fetchPageDescription(item.url);
+          if (pageSummary.length > summary.length) {
+            summary = pageSummary;
+          }
+        }
+
+        return {
+          id: `gnews-${region}-${Date.now()}-${i}`,
+          title: item.title || "",
+          summary,
+          source: item.source?.name || "GNews",
+          sourceUrl: item.url || "",
+          publishedAt: item.publishedAt || new Date().toISOString(),
+          region,
+          isRead: false,
+          category: "general",
+          imageUrl: item.image || undefined,
+          originalLanguage: config.lang,
+        };
       })
     );
+    return articles;
   } catch {
     return [];
   }
@@ -57,31 +70,57 @@ async function fetchFromGNews(region: Region): Promise<Article[]> {
 async function fetchPageDescription(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
-      headers: { "User-Agent": "DailyNews/1.0" },
-      signal: AbortSignal.timeout(5000),
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; DailyNews/1.0)",
+        Accept: "text/html",
+      },
+      signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return "";
     const html = await res.text();
 
-    // Try og:description first, then meta description
+    // 1. Try og:description
     const ogMatch = html.match(
       /<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']+)["']/i
     ) || html.match(
       /<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:description["']/i
     );
-    if (ogMatch?.[1]) return ogMatch[1].slice(0, 500);
+    if (ogMatch?.[1] && ogMatch[1].length > 30) return decodeHtmlEntities(ogMatch[1]).slice(0, 500);
 
+    // 2. Try meta description
     const metaMatch = html.match(
       /<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i
     ) || html.match(
       /<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["']/i
     );
-    if (metaMatch?.[1]) return metaMatch[1].slice(0, 500);
+    if (metaMatch?.[1] && metaMatch[1].length > 30) return decodeHtmlEntities(metaMatch[1]).slice(0, 500);
+
+    // 3. Extract leading text from <p> tags in the article body
+    const paragraphs = html.match(/<p[^>]*>([^<]{40,})<\/p>/gi);
+    if (paragraphs && paragraphs.length > 0) {
+      const texts = paragraphs
+        .slice(0, 3)
+        .map((p) => p.replace(/<[^>]*>/g, "").trim())
+        .filter((t) => t.length > 30);
+      if (texts.length > 0) {
+        return texts.join(" ").slice(0, 500);
+      }
+    }
 
     return "";
   } catch {
     return "";
   }
+}
+
+function decodeHtmlEntities(text: string): string {
+  return text
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&nbsp;/g, " ");
 }
 
 async function fetchFromRSS(region: Region): Promise<Article[]> {
@@ -101,9 +140,12 @@ async function fetchFromRSS(region: Region): Promise<Article[]> {
               item.content?.replace(/<[^>]*>/g, "").trim().slice(0, 500) ||
               "";
 
-            // If no summary, try to fetch from the article page
-            if (!summary && item.link) {
-              summary = await fetchPageDescription(item.link);
+            // If summary is missing or too short, try to fetch from the article page
+            if (summary.length < 80 && item.link) {
+              const pageSummary = await fetchPageDescription(item.link);
+              if (pageSummary.length > summary.length) {
+                summary = pageSummary;
+              }
             }
 
             return {
