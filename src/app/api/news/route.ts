@@ -69,14 +69,14 @@ async function fetchPageDescription(url: string): Promise<string> {
     ) || html.match(
       /<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:description["']/i
     );
-    if (ogMatch?.[1]) return ogMatch[1].slice(0, 300);
+    if (ogMatch?.[1]) return ogMatch[1].slice(0, 500);
 
     const metaMatch = html.match(
       /<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i
     ) || html.match(
       /<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["']/i
     );
-    if (metaMatch?.[1]) return metaMatch[1].slice(0, 300);
+    if (metaMatch?.[1]) return metaMatch[1].slice(0, 500);
 
     return "";
   } catch {
@@ -97,8 +97,8 @@ async function fetchFromRSS(region: Region): Promise<Article[]> {
         const articlesFromFeed = await Promise.all(
           items.map(async (item, i): Promise<Article> => {
             let summary =
-              item.contentSnippet?.slice(0, 300) ||
-              item.content?.replace(/<[^>]*>/g, "").trim().slice(0, 300) ||
+              item.contentSnippet?.slice(0, 500) ||
+              item.content?.replace(/<[^>]*>/g, "").trim().slice(0, 500) ||
               "";
 
             // If no summary, try to fetch from the article page

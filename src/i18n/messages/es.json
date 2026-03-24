@@ -33,7 +33,8 @@
     "loading": "Cargando...",
     "readOriginal": "Leer original",
     "translateTo": "Traducir a",
-    "summary": "Resumen"
+    "summary": "Resumen",
+    "refreshAll": "Actualizar Todo"
   },
   "paidSites": {
     "title": "Sitios de Pago Registrados",

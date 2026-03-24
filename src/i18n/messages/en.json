@@ -33,7 +33,8 @@
     "loading": "Loading...",
     "readOriginal": "Read Original",
     "translateTo": "Translate to",
-    "summary": "Summary"
+    "summary": "Summary",
+    "refreshAll": "Refresh All"
   },
   "paidSites": {
     "title": "Registered Paid Sites",

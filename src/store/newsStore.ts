@@ -9,7 +9,9 @@ interface NewsState {
   articles: Record<string, Article[]>;
   lastUpdated: Record<string, string>;
   isLoading: Record<string, boolean>;
+  isBulkRefreshing: boolean;
   fetchArticles: (region: Region) => Promise<void>;
+  fetchAllRegions: (regions: Region[]) => Promise<void>;
   markAsRead: (articleId: string) => void;
   markAllAsRead: (region: Region) => void;
   getUnreadCount: (region: Region) => number;
@@ -21,6 +23,7 @@ export const useNewsStore = create<NewsState>()(
       articles: {},
       lastUpdated: {},
       isLoading: {},
+      isBulkRefreshing: false,
       fetchArticles: async (region) => {
         set((state) => ({
           isLoading: { ...state.isLoading, [region]: true },
@@ -60,6 +63,11 @@ export const useNewsStore = create<NewsState>()(
             isLoading: { ...state.isLoading, [region]: false },
           }));
         }
+      },
+      fetchAllRegions: async (regions) => {
+        set({ isBulkRefreshing: true });
+        await Promise.all(regions.map((r) => get().fetchArticles(r)));
+        set({ isBulkRefreshing: false });
       },
       markAsRead: (articleId) => {
         set((state) => {

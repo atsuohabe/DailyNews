@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { RefreshCw, CheckCheck, Loader2 } from "lucide-react";
+import { RefreshCw, CheckCheck, Loader2, RotateCw } from "lucide-react";
 import { type Article, type Region } from "@/lib/types";
 import { useNewsStore } from "@/store/newsStore";
 import { useSettingsStore } from "@/store/settingsStore";
@@ -17,9 +17,12 @@ export default function NewsList() {
   const region = useSettingsStore((s) => s.region);
   const locale = useSettingsStore((s) => s.locale);
   const setRegion = useSettingsStore((s) => s.setRegion);
+  const enabledRegions = useSettingsStore((s) => s.enabledRegions);
   const rawArticles = useNewsStore((s) => s.articles[region]) || [];
   const lastUpdated = useNewsStore((s) => s.lastUpdated[region]);
   const fetchArticles = useNewsStore((s) => s.fetchArticles);
+  const fetchAllRegions = useNewsStore((s) => s.fetchAllRegions);
+  const isBulkRefreshing = useNewsStore((s) => s.isBulkRefreshing);
   const markAsRead = useNewsStore((s) => s.markAsRead);
   const markAllAsRead = useNewsStore((s) => s.markAllAsRead);
 
@@ -76,9 +79,23 @@ export default function NewsList() {
             className={`p-2 rounded-lg hover:bg-surface-bright transition-colors ${
               isLoading ? "animate-spin" : ""
             }`}
+            title={t("lastUpdated", { time: "" }).replace(/:?\s*$/, "")}
           >
             <RefreshCw size={16} className="text-text-secondary" />
           </button>
+          {enabledRegions.length > 1 && (
+            <button
+              onClick={() => fetchAllRegions(enabledRegions)}
+              disabled={isBulkRefreshing}
+              className={`flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-border hover:bg-surface-bright transition-colors ${
+                isBulkRefreshing ? "opacity-60" : ""
+              }`}
+              title={t("refreshAll")}
+            >
+              <RotateCw size={14} className={`text-text-secondary ${isBulkRefreshing ? "animate-spin" : ""}`} />
+              <span className="text-text-secondary">{t("refreshAll")}</span>
+            </button>
+          )}
         </div>
       </div>
 

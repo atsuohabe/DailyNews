@@ -33,7 +33,8 @@
     "loading": "載入中...",
     "readOriginal": "閱讀原文",
     "translateTo": "翻譯語言",
-    "summary": "摘要"
+    "summary": "摘要",
+    "refreshAll": "全部更新"
   },
   "paidSites": {
     "title": "已註冊付費網站",
