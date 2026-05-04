@@ -18,6 +18,7 @@ export default function CompanyNews() {
   const markAsRead = useCompaniesStore((s) => s.markAsRead);
   const markAllAsRead = useCompaniesStore((s) => s.markAllAsRead);
   const companies = useCompaniesStore((s) => s.companies);
+  const isLoading = useCompaniesStore((s) => s.isLoading);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -26,10 +27,10 @@ export default function CompanyNews() {
     setSelectedArticle(article);
   };
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
     setIsRefreshing(true);
-    fetchArticles();
-    setTimeout(() => setIsRefreshing(false), 500);
+    await fetchArticles();
+    setIsRefreshing(false);
   };
 
   const unreadCount = articles.filter((a) => !a.isRead).length;
@@ -75,15 +76,31 @@ export default function CompanyNews() {
               </button>
             </div>
           </div>
-          <div className="space-y-2">
-            {articles.map((article) => (
-              <NewsCard
-                key={article.id}
-                article={article}
-                onClick={() => handleArticleClick(article)}
-              />
-            ))}
-          </div>
+          {isLoading || isRefreshing ? (
+            <div className="space-y-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="card animate-pulse">
+                  <div className="h-4 bg-surface-bright rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-surface-bright rounded w-full mb-1" />
+                  <div className="h-3 bg-surface-bright rounded w-2/3" />
+                </div>
+              ))}
+            </div>
+          ) : articles.length === 0 ? (
+            <p className="text-sm text-text-secondary text-center py-4">
+              {t("noArticles")}
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {articles.map((article) => (
+                <NewsCard
+                  key={article.id}
+                  article={article}
+                  onClick={() => handleArticleClick(article)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 

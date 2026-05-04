@@ -39,7 +39,7 @@ async function fetchFromGNews(region: Region): Promise<Article[]> {
         let summary = item.description || "";
 
         // If summary is too short, try to enrich from the article page
-        if (summary.length < 80 && item.url) {
+        if (summary.length < 100 && item.url) {
           const pageSummary = await fetchPageDescription(item.url);
           if (pageSummary.length > summary.length) {
             summary = pageSummary;
@@ -71,40 +71,68 @@ async function fetchPageDescription(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; DailyNews/1.0)",
-        Accept: "text/html",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Accept: "text/html,application/xhtml+xml",
+        "Accept-Language": "ja,en;q=0.9",
       },
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(10000),
+      redirect: "follow",
     });
     if (!res.ok) return "";
     const html = await res.text();
 
     // 1. Try og:description
-    const ogMatch = html.match(
-      /<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']+)["']/i
-    ) || html.match(
-      /<meta[^>]*content=["']([^"']+)["'][^>]*property=["']og:description["']/i
-    );
-    if (ogMatch?.[1] && ogMatch[1].length > 30) return decodeHtmlEntities(ogMatch[1]).slice(0, 500);
+    const ogMatch =
+      html.match(
+        /<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']{20,})["']/i
+      ) ||
+      html.match(
+        /<meta[^>]*content=["']([^"']{20,})["'][^>]*property=["']og:description["']/i
+      );
+    if (ogMatch?.[1]) {
+      const text = decodeHtmlEntities(ogMatch[1]).trim();
+      if (text.length > 30) return text.slice(0, 800);
+    }
 
     // 2. Try meta description
-    const metaMatch = html.match(
-      /<meta[^>]*name=["']description["'][^>]*content=["']([^"']+)["']/i
-    ) || html.match(
-      /<meta[^>]*content=["']([^"']+)["'][^>]*name=["']description["']/i
-    );
-    if (metaMatch?.[1] && metaMatch[1].length > 30) return decodeHtmlEntities(metaMatch[1]).slice(0, 500);
+    const metaMatch =
+      html.match(
+        /<meta[^>]*name=["']description["'][^>]*content=["']([^"']{20,})["']/i
+      ) ||
+      html.match(
+        /<meta[^>]*content=["']([^"']{20,})["'][^>]*name=["']description["']/i
+      );
+    if (metaMatch?.[1]) {
+      const text = decodeHtmlEntities(metaMatch[1]).trim();
+      if (text.length > 30) return text.slice(0, 800);
+    }
 
-    // 3. Extract leading text from <p> tags in the article body
-    const paragraphs = html.match(/<p[^>]*>([^<]{40,})<\/p>/gi);
-    if (paragraphs && paragraphs.length > 0) {
-      const texts = paragraphs
-        .slice(0, 3)
-        .map((p) => p.replace(/<[^>]*>/g, "").trim())
-        .filter((t) => t.length > 30);
-      if (texts.length > 0) {
-        return texts.join(" ").slice(0, 500);
+    // 3. Try article body or main content area
+    const bodyMatch =
+      html.match(/<article[^>]*>([\s\S]*?)<\/article>/i) ||
+      html.match(/<div[^>]*class="[^"]*(?:article|entry|post|content|body)[^"]*"[^>]*>([\s\S]*?)<\/div>/i) ||
+      html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+
+    const searchArea = bodyMatch ? bodyMatch[1] : html;
+
+    // 4. Extract text from <p> tags (handles nested HTML inside <p>)
+    const pTagRegex = /<p[^>]*>([\s\S]*?)<\/p>/gi;
+    const paragraphs: string[] = [];
+    let match;
+    while ((match = pTagRegex.exec(searchArea)) !== null) {
+      const text = match[1]
+        .replace(/<[^>]*>/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (text.length > 20) {
+        paragraphs.push(text);
       }
+      if (paragraphs.length >= 5) break;
+    }
+
+    if (paragraphs.length > 0) {
+      return paragraphs.join(" ").slice(0, 800);
     }
 
     return "";
@@ -135,13 +163,29 @@ async function fetchFromRSS(region: Region): Promise<Article[]> {
 
         const articlesFromFeed = await Promise.all(
           items.map(async (item, i): Promise<Article> => {
-            let summary =
-              item.contentSnippet?.slice(0, 500) ||
-              item.content?.replace(/<[^>]*>/g, "").trim().slice(0, 500) ||
-              "";
+            // Extract the best available summary from RSS fields
+            const contentSnippet = item.contentSnippet?.trim() || "";
+            const contentStripped = item.content
+              ? item.content.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim()
+              : "";
+            const description = (item as Record<string, unknown>).description
+              ? String((item as Record<string, unknown>).description)
+                  .replace(/<[^>]*>/g, "")
+                  .replace(/\s+/g, " ")
+                  .trim()
+              : "";
+
+            // Pick the longest available text
+            let summary = "";
+            for (const candidate of [contentSnippet, contentStripped, description]) {
+              if (candidate.length > summary.length) {
+                summary = candidate;
+              }
+            }
+            summary = summary.slice(0, 800);
 
             // If summary is missing or too short, try to fetch from the article page
-            if (summary.length < 80 && item.link) {
+            if (summary.length < 100 && item.link) {
               const pageSummary = await fetchPageDescription(item.link);
               if (pageSummary.length > summary.length) {
                 summary = pageSummary;

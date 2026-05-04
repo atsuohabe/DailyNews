@@ -50,6 +50,7 @@
     "noSites": "No hay sitios registrados",
     "loginMaintained": "Las credenciales se mantienen",
     "articles": "Artículos",
+    "noArticles": "Obteniendo artículos, por favor espere...",
     "confirmDelete": "¿Eliminar este sitio?",
     "emptyDescription": "Registre sitios de noticias de pago para obtener artículos automáticamente"
   },
@@ -64,6 +65,7 @@
     "edit": "Editar",
     "noCompanies": "No hay empresas registradas",
     "topics": "Temas Principales",
+    "noArticles": "Obteniendo artículos, por favor espere...",
     "confirmDelete": "¿Eliminar esta empresa?",
     "emptyDescription": "Registre empresas para obtener noticias relacionadas automáticamente"
   },

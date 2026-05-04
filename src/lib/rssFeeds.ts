@@ -11,6 +11,8 @@ export const RSS_FEEDS: Record<string, RSSSource[]> = {
     { name: "NHKニュース", url: "https://www.nhk.or.jp/rss/news/cat0.xml", language: "ja" },
     { name: "Yahoo!ニュース", url: "https://news.yahoo.co.jp/rss/topics/top-picks.xml", language: "ja" },
     { name: "朝日新聞デジタル", url: "https://www.asahi.com/rss/asahi/newsheadlines.rdf", language: "ja" },
+    { name: "毎日新聞", url: "https://mainichi.jp/rss/etc/mainichi-flash.rss", language: "ja" },
+    { name: "Google News JP", url: "https://news.google.com/rss?hl=ja&gl=JP&ceid=JP:ja", language: "ja" },
   ],
   global: [
     { name: "Reuters", url: "https://feeds.reuters.com/reuters/topNews", language: "en" },

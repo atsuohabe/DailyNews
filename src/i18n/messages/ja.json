@@ -50,6 +50,7 @@
     "noSites": "登録されたサイトはありません",
     "loginMaintained": "ログイン情報は維持されます",
     "articles": "記事一覧",
+    "noArticles": "記事の取得中です。しばらくお待ちください",
     "confirmDelete": "このサイトを削除しますか？",
     "emptyDescription": "有料ニュースサイトを登録すると、記事が自動的に取得されます"
   },
@@ -64,6 +65,7 @@
     "edit": "編集",
     "noCompanies": "登録された企業はありません",
     "topics": "主要トピック",
+    "noArticles": "記事の取得中です。しばらくお待ちください",
     "confirmDelete": "この企業を削除しますか？",
     "emptyDescription": "企業を登録すると、関連ニュースが自動的に取得されます"
   },

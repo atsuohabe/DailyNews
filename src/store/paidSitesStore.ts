@@ -3,15 +3,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { type PaidSite, type Article } from "@/lib/types";
-import { getMockPaidArticles } from "@/lib/mockData";
 
 interface PaidSitesState {
   sites: PaidSite[];
   articles: Article[];
+  isLoading: boolean;
   addSite: (site: Omit<PaidSite, "id" | "isActive">) => void;
   removeSite: (id: string) => void;
   updateSite: (id: string, updates: Partial<PaidSite>) => void;
-  fetchArticles: () => void;
+  fetchArticles: () => Promise<void>;
   markAsRead: (articleId: string) => void;
   markAllAsRead: () => void;
   getUnreadCount: () => number;
@@ -22,18 +22,15 @@ export const usePaidSitesStore = create<PaidSitesState>()(
     (set, get) => ({
       sites: [],
       articles: [],
+      isLoading: false,
       addSite: (site) => {
         const newSite: PaidSite = {
           ...site,
           id: crypto.randomUUID(),
           isActive: true,
         };
-        set((state) => {
-          const sites = [...state.sites, newSite];
-          // Generate articles for the new site
-          const newArticles = getMockPaidArticles(newSite.name, newSite.id);
-          return { sites, articles: [...state.articles, ...newArticles] };
-        });
+        set((state) => ({ sites: [...state.sites, newSite] }));
+        setTimeout(() => get().fetchArticles(), 100);
       },
       removeSite: (id) => {
         set((state) => ({
@@ -46,21 +43,39 @@ export const usePaidSitesStore = create<PaidSitesState>()(
           sites: state.sites.map((s) => (s.id === id ? { ...s, ...updates } : s)),
         }));
       },
-      fetchArticles: () => {
+      fetchArticles: async () => {
         const { sites, articles: existing } = get();
         if (sites.length === 0) {
           set({ articles: [] });
           return;
         }
-        const allArticles = sites.flatMap((site) =>
-          getMockPaidArticles(site.name, site.id)
-        );
-        // Preserve read status
-        const merged = allArticles.map((article) => {
-          const prev = existing.find((a) => a.id === article.id);
-          return prev ? { ...article, isRead: prev.isRead } : article;
-        });
-        set({ articles: merged });
+
+        set({ isLoading: true });
+
+        try {
+          const activeSites = sites.filter((s) => s.isActive);
+          const res = await fetch("/api/paid-sites", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              sites: activeSites.map((s) => ({ id: s.id, name: s.name, url: s.url })),
+            }),
+          });
+          const data = await res.json();
+          const fetched: Article[] = data.articles || [];
+
+          if (fetched.length > 0) {
+            const merged = fetched.map((article) => {
+              const prev = existing.find((a) => a.id === article.id);
+              return prev ? { ...article, isRead: prev.isRead } : article;
+            });
+            set({ articles: merged, isLoading: false });
+          } else {
+            set({ isLoading: false });
+          }
+        } catch {
+          set({ isLoading: false });
+        }
       },
       markAsRead: (articleId) => {
         set((state) => ({
